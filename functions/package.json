@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.4",
     "firebase-admin": "^5.4.2",
-    "firebase-functions": "^0.7.1"
+    "firebase-functions": "^0.7.1",
+    "twitch-api": "^0.4.6",
+    "twitch-bot": "git+https://github.com/LibertyBeta/twitch-bot.git"
   }
 }
