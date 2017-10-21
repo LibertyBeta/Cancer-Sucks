@@ -1,30 +1,28 @@
 const TwitchBot = require('twitch-bot');
 const admin = require('firebase-admin');
 
-
-
-console.log('Setting Up Firebase');
+process.stdout.write('Setting Up Firebase\n');
 const serviceAccount = require('./cancer-sucks');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://cancer-sucks.firebaseio.com"
 });
-console.log('Getting Marvin setup....');
+process.stdout.write('Getting Marvin setup....\n');
 let marvin = null;
 admin.database().ref('twitchAuth').on("value", (snapshot) => {
-    console.log('Got a bit of data');
+    process.stdout.write('Got a bit of data\n');
     if (snapshot.val() === null) {
         admin.database().ref('/bot/status').set('online');
-        console.log("Marvin Can't Startup. No Auth Token")
+        process.stdout.write("Marvin Can't Startup. No Auth Toke\nn")
     } else {
         if (marvin) {
             admin.database().ref('/bot/status').set('online');
-            console.log("Killing the OLD marvine")
+            process.stdout.write("Killing the OLD marvin\ne")
             marvin.close();
             marvin = {};
         }
-        console.log('Starting Up Marvin');
+        process.stdout.write('Starting Up Marvin\n');
 
         let interval = {};
         marvin = new TwitchBot({
@@ -77,13 +75,13 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
         marvin.on('error', err => {
             clearInterval(interval);
             admin.database().ref('/bot/status').set('offline');
-            console.log(err)
+            process.stdout.write(`Error Found: ${err.message}`)
 
         })
         marvin.on('close', err => {
             clearInterval(interval);
             admin.database().ref('/bot/status').set('offline');
-            console.log(err)
+            process.stdout.write(`Error Found: ${err.message}`)
         })
     }
     //   res.
@@ -92,9 +90,8 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
 admin.database().ref('bot/que/')
     .on('value', (snapshot) => {
         const delta = snapshot.val();
-        console.log(delta);
         if (delta !== null) {
-            console.log(`${Object.keys(delta).length} messages in marvin's que`);
+            process.stdout.write(`${Object.keys(delta).length} messages in marvin's que\n`);
             const top = delta[Object.keys(delta)[0]];
             marvin.say(top);
             admin.database().ref(`/bot/que/${Object.keys(delta)[0]}`).remove();
