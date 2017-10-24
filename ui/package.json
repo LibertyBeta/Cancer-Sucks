@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "firebase": "^4.5.2",
+    "moment": "^2.19.1",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^0.16.9",
