@@ -14,14 +14,14 @@ const makeRef = () => {
 // shape: [{ id, quantity }]
 const state = {
   start: '2017-12-29',
-  name: 'Loading...',
+  title: 'Loading...',
   blerb: 'Loading...',
 };
 
 // getters
 const getters = {
   start: state => state.start,
-  name: state => state.name,
+  title: state => state.title,
   blerb: state => state.blerb,
 };
 
@@ -29,7 +29,6 @@ const getters = {
 const actions = {
   init() {
     makeRef();
-    // console.log(ref);
   },
 };
 
@@ -37,9 +36,12 @@ const actions = {
 // mutations
 const mutations = {
   load(state, snapshot) {
-    console.log(snapshot);
+    if (snapshot.team) {
+      const id = snapshot.team;
+      Store.dispatch('team/initDetails', id);
+    }
     state.start = snapshot.start;
-    state.name = snapshot.name;
+    state.title = snapshot.title;
     state.blerb = snapshot.blerb;
   },
 };

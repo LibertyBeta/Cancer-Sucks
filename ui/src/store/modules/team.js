@@ -18,22 +18,53 @@ const makeRef = () => {
   });
 };
 
+const makeTeamDetails = (id) => {
+  const teamRef = fb.database().ref(`/team/${id}`);
+  teamRef.on('value', (snapshot) => {
+    Store.commit('team/details', snapshot.val());
+  });
+};
+
 // initial state
 // shape: [{ id, quantity }]
 const state = {
   list: {},
+  details: {},
+  array: [],
+  progress: 0,
+  donations: [],
 };
 
 // getters
 const getters = {
   list: state => state.list,
   array: state => Object.values(state.list),
+  details: state => state.details,
+  progress: (state) => {
+    if (state.details.totalRaisedAmount) {
+      return (state.details.totalRaisedAmount / state.details.fundraisingGoal) * 100;
+    }
+    return 0;
+  },
+  donations: (state) => {
+    console.log('DONATIONS');
+    let compiled = [];
+    for (const member of state.array) {
+      if (member.donations) {
+        compiled = compiled.concat(member.domations);
+      }
+    }
+    return compiled;
+  },
 };
 
 // actions
 const actions = {
   init() {
     makeRef();
+  },
+  initDetails(context, id) {
+    makeTeamDetails(id);
   },
 };
 
@@ -58,6 +89,9 @@ const mutations = {
   update(state, { snapshot, key }) {
     state.list[key] = snapshot;
     state.list = { ...state.list };
+  },
+  details(state, details) {
+    state.details = details;
   },
 };
 

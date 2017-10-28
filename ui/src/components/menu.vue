@@ -1,7 +1,6 @@
 <template lang="html">
 
   <section class="menu">
-    {{menu}}
     <v-data-table
     v-bind:headers="headers"
     :items="menu"
@@ -59,6 +58,6 @@
 
 <style scoped lang="scss">
   .menu {
-
+    width: 100%;
   }
 </style>

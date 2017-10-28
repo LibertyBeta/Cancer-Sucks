@@ -5,15 +5,16 @@
       v-bind:size="200"
       v-bind:width="25"
       v-bind:rotate="180"
-      v-bind:value="99"
-      color="pink"
-    >
-     50
+      v-bind:value="progress"
+      color="pink">
+     {{progress}}%
     </v-progress-circular>
 
 </template>
 
 <script lang="js">
+  import { mapGetters } from 'vuex';
+
   export default {
     name: 'progress',
     props: [],
@@ -26,10 +27,11 @@
       };
     },
     methods: {
-
     },
     computed: {
-
+      ...mapGetters({
+        progress: 'team/progress',
+      }),
     },
 };
 </script>

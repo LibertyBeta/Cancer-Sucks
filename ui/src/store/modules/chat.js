@@ -54,8 +54,14 @@ const mutations = {
     state.history = Object.values(snapshot).sort(sorter);
   },
   add(stateSnapshot, snapshot) {
-    stateSnapshot.history.push(snapshot);
-    state.history = stateSnapshot.history.sort(sorter);
+    if (stateSnapshot.history
+      .some(x => (x.id === snapshot.id) && (x.tmi_sent_ts === snapshot.tmi_sent_ts))
+    ) {
+      Store.commit('chat/update', snapshot);
+    } else {
+      stateSnapshot.history.push(snapshot);
+      state.history = stateSnapshot.history.sort(sorter);
+    }
   },
   delete(stateSnapshot, element) {
     const jsoned = JSON.stringify(element);

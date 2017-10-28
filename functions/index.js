@@ -2,7 +2,10 @@ const cors = require('cors')({ origin: true });
 const TwitchApi = require('twitch-api');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const language = require('@google-cloud/language');
+
 const { getInfo, getTeam, getProgress } = require('./helpers');
+
 admin.initializeApp(functions.config().firebase);
 
 
@@ -58,19 +61,37 @@ exports.token = functions.https.onRequest((req, res) => {
 })
 
 
-// 
+const cycler = (members) => {
+    console.log(`There are ${members.length} members left to fetch`);
+    if (members.length === 0) {
+        return Promse.resolve(true);
+    } else {
+        return getInfo(members[0])
+            .then((result) => {
+                members.shift()
+                return cycler(members);
+            });
+    }
+}
 
 exports.fetchlife = functions.https.onRequest((req, res) => {
     if (req.method !== 'GET') {
         res.status(403).send('Forbidden!');
     }
     cors(req, res, () => {
-        admin.database().ref('/members').once("value", (snapshot) => {
-            const members = snapshot.val();
-            for (const member in members) {
-                getInfo(member);
+        admin.database().ref('/member').once("value", (snapshot) => {
+            const raw = snapshot.val();
+            if (raw) {
+                console.log(JSON.stringify(raw));
+                const members = Object.keys(raw);
+                console.log(`Fetching ${JSON.stringify(members)}`);
+                cycler(members)
+                    .then((data) => {
+                        res.status(200).send('online');
+                    })
             }
-            res.status(200).send('online');
+
+
         })
     })
 })
@@ -83,20 +104,21 @@ exports.joinMember = functions.database.ref('/member/{person}')
     })
 
 exports.checkMessage = functions.database.ref('/log/{element}')
-    .onCreate((snapshot) => {
-        if (snapshot.data.val() === null /*&& snapshot.data.val().display_name === "LibertyBeta"*/) return true;
+    .onCreate((event) => {
+        if (event.data.val() === null /*&& snapshot.data.val().display_name === "LibertyBeta"*/) return true;
 
+        const client = new language.LanguageServiceClient();
         //if this is a message to parse, build a Dictionary.
-        const message = snapshot.data.val().message.split(" ");
+        const message = event.data.val().message.split(" ");
 
         //Fist..check if they gave!
         const gaveDict = ['donated', 'gave']
-        console.log(message.filter((e) => { return gaveDict.indexOf(e.toLowerCase()) > -1 }))
+
         if (message.filter((e) => { return gaveDict.indexOf(e.toLowerCase()) > -1 }).length !== 0) {
             admin.database().ref('/member').once('value', (snapshot) => {
                 const people = Object.keys(snapshot.val());
                 for (const person of people) {
-                    getProgress(person).then((data) => { console.log(`${people} got`) })
+                    getProgress(person);
                 }
                 res(true);
             })
@@ -114,7 +136,30 @@ exports.checkMessage = functions.database.ref('/log/{element}')
         if (message.filter((e) => { return hi.indexOf(e.toLowerCase()) > -1 }).length !== 0) {
             admin.database().ref('/bot/que').push(`Hi ${snapshot.data.val().display_name}`);
         }
-        return true
+        const document = {
+            content: event.data.val().message,
+            type: 'PLAIN_TEXT',
+        };
+        const ref = event.data.ref;
+        return client
+            .analyzeSentiment({ document: document })
+            .then(results => {
+                const sentiment = results[0].documentSentiment;
+
+                console.log(`Text: ${document.content}`);
+                console.log(`Sentiment score: ${sentiment.score}`);
+                console.log(`Sentiment magnitude: ${sentiment.magnitude}`);
+                if (sentiment.score < 0) {
+                    return ref.remove();
+                } else {
+                    return true;
+                }
+            })
+            .catch(err => {
+                console.error('ERROR:', err);
+            });
+
+        // return true
         // console.log(` Getting ${snapshot.params.person}`)
         // return getInfo(snapshot.params.person);
         // return true;

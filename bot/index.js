@@ -75,13 +75,13 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
         marvin.on('error', err => {
             clearInterval(interval);
             admin.database().ref('/bot/status').set('offline');
-            process.stdout.write(`Error Found: ${err.message}`)
+            process.stdout.write(`Error Found: ${err}`)
 
         })
         marvin.on('close', err => {
             clearInterval(interval);
             admin.database().ref('/bot/status').set('offline');
-            process.stdout.write(`Error Found: ${err.message}`)
+            process.stdout.write(`Error Found: ${err}`)
         })
     }
     //   res.

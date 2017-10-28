@@ -1,6 +1,13 @@
 <template>
   <v-app>
-    <v-toolbar app>{{countdown}}</v-toolbar>
+    <v-toolbar app dark color="primary">
+      <v-toolbar-title>{{title}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn flat>{{countdown}}</v-btn>
+        
+      </v-toolbar-items>
+    </v-toolbar>
     <main>
       <v-content>
         <v-container grid-list-lg text-md-center>
@@ -30,11 +37,11 @@
         </v-container>
       </v-content>
     </main>
-    <v-footer app></v-footer>
   </v-app>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import progress from './components/progress';
 import donations from './components/donations';
 import menu from './components/menu';
@@ -61,12 +68,13 @@ export default {
     clearInterval(this.interval);
   },
   computed: {
-    title() {
-      return this.$store.state.settings.title;
-    },
+    ...mapGetters({
+      title: 'settings/title',
+    }),
   },
   watch: {
     now() {
+      // console.log(this.$store.state.settings.title);
       const start = new Date(Date.parse(this.$store.state.settings.start)).getTime();
       const now = new Date().getTime();
 
@@ -74,19 +82,19 @@ export default {
 
       // Time calculations for days, hours, minutes and seconds
       let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      days = (days > 10 ? days : `0${days}`);
+      days = (days >= 10 ? days : `0${days}`);
       let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      hours = (hours > 10 ? hours : `0${hours}`);
+      hours = (hours >= 10 ? hours : `0${hours}`);
       let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      minutes = (minutes > 10 ? minutes : `0${minutes}`);
+      minutes = (minutes >= 10 ? minutes : `0${minutes}`);
       let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      seconds = (seconds > 10 ? seconds : `0${seconds}`);
+      seconds = (seconds >= 10 ? seconds : `0${seconds}`);
 
       const dur = `${days} :  ${hours} : ${minutes} : ${seconds}`;
       if (start < now) {
         this.countdown = dur;
       } else {
-        this.countdown = `-${dur}`;
+        this.countdown = `- ${dur}`;
       }
     },
   },
