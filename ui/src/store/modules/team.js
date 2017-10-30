@@ -47,14 +47,16 @@ const getters = {
     return 0;
   },
   donations: (state) => {
-    console.log('DONATIONS');
-    let compiled = [];
-    for (const member of state.array) {
-      if (member.donations) {
-        compiled = compiled.concat(member.domations);
+    if (state.list) {
+      let compiled = [];
+      for (const member of Object.values(state.list)) {
+        if (member.donations) {
+          compiled = compiled.concat(Object.values(member.donations));
+        }
       }
+      return compiled;
     }
-    return compiled;
+    return [];
   },
 };
 

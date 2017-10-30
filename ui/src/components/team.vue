@@ -7,11 +7,11 @@
         v-bind:rotate="90"
         v-bind:value="(member.totalRaisedAmount /  member.fundraisingGoal) * 100"
         color="pink"
-      >
+        class="mouseable"
+        v-on:click="goTo(member.donateURL)">
         <v-avatar
           :size="avatarSize"
-          class="grey lighten-4"
-        >
+          class="grey lighten-4">
           <img v-bind:src=member.avatarImageURL alt="avatar">
         </v-avatar>
       </v-progress-circular>
@@ -36,7 +36,10 @@
       };
     },
     methods: {
-
+      goTo(url) {
+        console.log('click');
+        window.open(url);
+      },
     },
     computed: {
       ...mapGetters({
@@ -50,5 +53,7 @@
 </script>
 
 <style scoped lang="scss">
-
+  .mouseable{
+    cursor: pointer;
+  }
 </style>

@@ -7,11 +7,11 @@
     class="elevation-1 chat"
   >
     <template slot="items" scope="props">
-      <td class="text-xs-left user cyan lighten-3">{{ props.item.display_name }}</td>
+      <td class="text-xs-left message">{{ ( new Date(props.item.createdOn)).toLocaleDateString() }}</td>
+      <td class="text-xs-right">${{ props.item.donationAmount.toFixed(2) }}</td>
       <td class="text-xs-left message">{{ props.item.message }}</td>
     </template>
   </v-data-table>
-  {{donations}}
 </section>
 </template>
 
@@ -27,22 +27,22 @@
       return {
         headers: [
           {
-            text: 'Amount',
+            text: 'When',
             align: 'left',
             sortable: false,
-            value: 'amount',
+            value: 'createdOn',
           },
           {
-            text: 'When',
+            text: 'Amount',
             align: 'right',
             sortable: false,
-            value: 'timeshot',
+            value: 'donationAmount',
           },
           {
             text: 'Message',
-            align: 'right',
+            align: 'left',
             sortable: false,
-            value: 'Comment',
+            value: 'Message',
           },
         ],
       };

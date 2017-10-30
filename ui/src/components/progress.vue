@@ -7,7 +7,7 @@
       v-bind:rotate="180"
       v-bind:value="progress"
       color="pink">
-     {{progress}}%
+     {{progress.toFixed(2)}}%
     </v-progress-circular>
 
 </template>

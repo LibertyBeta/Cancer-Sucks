@@ -64,7 +64,7 @@ exports.token = functions.https.onRequest((req, res) => {
 const cycler = (members) => {
     console.log(`There are ${members.length} members left to fetch`);
     if (members.length === 0) {
-        return Promse.resolve(true);
+        return Promise.resolve(true);
     } else {
         return getInfo(members[0])
             .then((result) => {
