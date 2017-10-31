@@ -10,7 +10,7 @@
     </v-toolbar>
     <main>
       <v-content>
-        <v-container grid-list-lg text-md-center>
+        <v-container grid-list-lg text-md-center text-xs-center>
           <v-layout row wrap>
             <v-flex xs12>
               <c-progress></c-progress>

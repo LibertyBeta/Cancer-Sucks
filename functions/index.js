@@ -2,7 +2,7 @@ const cors = require('cors')({ origin: true });
 const TwitchApi = require('twitch-api');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const language = require('@google-cloud/language');
+const LanguageServiceClient = require('@google-cloud/language').v1beta2.LanguageServiceClient;
 
 const { getInfo, getTeam, getProgress } = require('./helpers');
 
@@ -62,7 +62,6 @@ exports.token = functions.https.onRequest((req, res) => {
 
 
 const cycler = (members) => {
-    console.log(`There are ${members.length} members left to fetch`);
     if (members.length === 0) {
         return Promise.resolve(true);
     } else {
@@ -107,7 +106,7 @@ exports.checkMessage = functions.database.ref('/log/{element}')
     .onCreate((event) => {
         if (event.data.val() === null /*&& snapshot.data.val().display_name === "LibertyBeta"*/) return true;
 
-        const client = new language.LanguageServiceClient();
+        const client = new LanguageServiceClient();
         //if this is a message to parse, build a Dictionary.
         const message = event.data.val().message.split(" ");
 
@@ -140,6 +139,24 @@ exports.checkMessage = functions.database.ref('/log/{element}')
             content: event.data.val().message,
             type: 'PLAIN_TEXT',
         };
+
+        client
+            .classifyText({ document: document })
+            .then(results => {
+                const classification = results[0];
+                console.log(classification);
+                console.log(results);
+                console.log('Categories:');
+                classification.categories.forEach(category => {
+                    console.log(
+                        `Name: ${category.name}, Confidence: ${category.confidence}`
+                    );
+                });
+            })
+            .catch(err => {
+                console.error('ERROR:', err);
+            });
+
         const ref = event.data.ref;
         return client
             .analyzeSentiment({ document: document })

@@ -1,14 +1,14 @@
 <template lang="html">
 
   <v-progress-circular
-  class="progressor"
-      v-bind:size="200"
-      v-bind:width="25"
-      v-bind:rotate="180"
-      v-bind:value="progress"
-      color="pink">
-     {{progress.toFixed(2)}}%
-    </v-progress-circular>
+    class="progressor"
+    v-bind:size="200"
+    v-bind:width="25"
+    v-bind:rotate="180"
+    v-bind:value="progress"
+    color="pink">
+      {{progress.toFixed(2)}}%
+  </v-progress-circular>
 
 </template>
 

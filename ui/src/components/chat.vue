@@ -4,11 +4,14 @@
     :items="log"
     hide-actions
     hide-headers
-    class="elevation-1 chat"
-  >
+    class="elevation-1 chat">
     <template slot="items" scope="props">
-      <td class="text-xs-left user cyan lighten-3">{{ props.item.display_name }}</td>
-      <td class="text-xs-left message">{{ props.item.message }}</td>
+      <td class="text-xs-left message">
+        <v-chip color="indigo" text-color="white">
+          {{ props.item.display_name }}
+        </v-chip>
+        {{ props.item.message }}
+      </td>
     </template>
   </v-data-table>
 </template>

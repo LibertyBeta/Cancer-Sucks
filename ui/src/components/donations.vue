@@ -4,8 +4,7 @@
     v-bind:headers="headers"
     :items="donations"
     hide-actions
-    class="elevation-1 chat"
-  >
+    class="elevation-1 chat">
     <template slot="items" scope="props">
       <td class="text-xs-left message">{{ ( new Date(props.item.createdOn)).toLocaleDateString() }}</td>
       <td class="text-xs-right">${{ props.item.donationAmount.toFixed(2) }}</td>

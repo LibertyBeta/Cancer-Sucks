@@ -36,7 +36,9 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
 
             interval = setInterval(() => {
                 admin.database().ref('/marvin/shout').once('value', (snapshot) => {
-                    marvin.say(snapshot.val());
+                    if(snapshot.val() !== null){
+                        marvin.say(snapshot.val());
+                    }  
                 })
             }, 900000);
             marvin.on('message', chatter => {
