@@ -37,7 +37,6 @@
     },
     methods: {
       goTo(url) {
-        console.log('click');
         window.open(url);
       },
     },
