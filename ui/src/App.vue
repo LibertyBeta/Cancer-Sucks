@@ -56,6 +56,7 @@ export default {
       now: '...',
       countdown: '00:00:00:00',
       inerval: null,
+      data: null,
     };
   },
   mounted() {
@@ -63,9 +64,15 @@ export default {
     this.interval = setInterval(() => {
       this.now = new Date().toISOString();
     }, 1000);
+    this.data = setInterval(() => {
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('GET', 'https://us-central1-cancer-sucks.cloudfunctions.net/fetchlife');
+      xmlHttp.send(null);
+    }, (30 * 60 * 1000));
   },
   beforeDestroy() {
     clearInterval(this.interval);
+    clearImmediate(this.data);
   },
   computed: {
     ...mapGetters({
