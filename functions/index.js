@@ -2,7 +2,7 @@ const cors = require('cors')({ origin: true });
 const TwitchApi = require('twitch-api');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const LanguageServiceClient = require('@google-cloud/language').v1beta2.LanguageServiceClient;
+const language = require('@google-cloud/language');
 
 const { getInfo, getTeam, getProgress } = require('./helpers');
 
@@ -106,7 +106,7 @@ exports.checkMessage = functions.database.ref('/log/{element}')
     .onCreate((event) => {
         if (event.data.val() === null /*&& snapshot.data.val().display_name === "LibertyBeta"*/) return true;
 
-        const client = new LanguageServiceClient();
+        const client = new language.LanguageServiceClient();
         //if this is a message to parse, build a Dictionary.
         const message = event.data.val().message.split(" ");
 
@@ -140,32 +140,11 @@ exports.checkMessage = functions.database.ref('/log/{element}')
             type: 'PLAIN_TEXT',
         };
 
-        client
-            .classifyText({ document: document })
-            .then(results => {
-                const classification = results[0];
-                console.log(classification);
-                console.log(results);
-                console.log('Categories:');
-                classification.categories.forEach(category => {
-                    console.log(
-                        `Name: ${category.name}, Confidence: ${category.confidence}`
-                    );
-                });
-            })
-            .catch(err => {
-                console.error('ERROR:', err);
-            });
-
         const ref = event.data.ref;
         return client
             .analyzeSentiment({ document: document })
             .then(results => {
                 const sentiment = results[0].documentSentiment;
-
-                console.log(`Text: ${document.content}`);
-                console.log(`Sentiment score: ${sentiment.score}`);
-                console.log(`Sentiment magnitude: ${sentiment.magnitude}`);
                 if (sentiment.score < 0) {
                     return ref.remove();
                 } else {
@@ -176,10 +155,7 @@ exports.checkMessage = functions.database.ref('/log/{element}')
                 console.error('ERROR:', err);
             });
 
-        // return true
-        // console.log(` Getting ${snapshot.params.person}`)
-        // return getInfo(snapshot.params.person);
-        // return true;
+
     })
 
 exports.fillTeam = functions.database.ref('/team/{team}')
