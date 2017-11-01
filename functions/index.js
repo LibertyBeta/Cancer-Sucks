@@ -127,13 +127,13 @@ exports.checkMessage = functions.database.ref('/log/{element}')
         const giveDict = ['donate', 'give', 'give?', 'donate?'];
 
         if (message.filter((e) => { return giveDict.indexOf(e.toLowerCase()) > -1 }).length !== 0) {
-            admin.database().ref('/bot/que').push(`Hi ${snapshot.data.val().display_name}, I think you want to donate. Donate here: https://www.extra-life.org/index.cfm?fuseaction=donorDrive.team&teamID=35933`);
+            admin.database().ref('/bot/que').push(`Hi ${event.data.val().display_name}, I think you want to donate. Donate here: https://www.extra-life.org/index.cfm?fuseaction=donorDrive.team&teamID=35933`);
         }
 
         const hi = ['hi'];
 
         if (message.filter((e) => { return hi.indexOf(e.toLowerCase()) > -1 }).length !== 0) {
-            admin.database().ref('/bot/que').push(`Hi ${snapshot.data.val().display_name}`);
+            admin.database().ref('/bot/que').push(`Hi ${event.data.val().display_name}`);
         }
         const document = {
             content: event.data.val().message,
