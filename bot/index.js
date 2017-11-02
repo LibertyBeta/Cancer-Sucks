@@ -18,7 +18,7 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
     } else {
         if (marvin) {
             admin.database().ref('/bot/status').set('online');
-            process.stdout.write("Killing the OLD marvin\ne")
+            process.stdout.write("Killing the OLD marvin\n")
             marvin.close();
             marvin = {};
         }
@@ -77,13 +77,13 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
         marvin.on('error', err => {
             clearInterval(interval);
             admin.database().ref('/bot/status').set('offline');
-            process.stdout.write(`Error Found: ${err}`)
+            process.stdout.write(`Error Found: ${JSON.stringify(err)}\n`)
 
         })
         marvin.on('close', err => {
             clearInterval(interval);
             admin.database().ref('/bot/status').set('offline');
-            process.stdout.write(`Error Found: ${err}`)
+            process.stdout.write(`Error Found: ${JSON.stringify(err)}\n`)
         })
     }
     //   res.
