@@ -13,16 +13,12 @@ const twitchJSON = require('./twitch.json');
 
 const twitch = new TwitchApi(twitchJSON);
 
-// let marvin = {};
+
 
 exports.authTwitch = functions.https.onRequest((req, res) => {
     if (req.method !== 'GET') {
         res.status(403).send('Forbidden!');
     }
-    // [END sendError]
-
-    // [START usingMiddleware]
-    // Enable CORS using the `cors` express middleware.
     cors(req, res, () => {
         res.redirect(twitch.getAuthorizationUrl());
     })
@@ -33,18 +29,13 @@ exports.token = functions.https.onRequest((req, res) => {
     if (req.method !== 'GET') {
         res.status(403).send('Forbidden!');
     }
-    // [END sendError]
-
-    // [START usingMiddleware]
-    // Enable CORS using the `cors` express middleware.
+    
     cors(req, res, () => {
         twitch.getAccessToken(req.query.code, (err, body) => {
             if (err) {
                 res.status(403).send(err);
             } else {
-                console.log("1", body);
-                console.log("2", body.toString());
-                // console.log(JSON.parse(body.toString()))
+                
                 if (body.access_token) {
                     admin.database().ref('/twitchAuth').set(body);
                     res.status(200).send('SAVED!');
@@ -52,10 +43,8 @@ exports.token = functions.https.onRequest((req, res) => {
                     res.status(503).send('no save!');
                 }
 
-
             }
         });
-
 
     })
 })
@@ -81,7 +70,6 @@ exports.fetchlife = functions.https.onRequest((req, res) => {
         admin.database().ref('/member').once("value", (snapshot) => {
             const raw = snapshot.val();
             if (raw) {
-                console.log(JSON.stringify(raw));
                 const members = Object.keys(raw);
                 console.log(`Fetching ${JSON.stringify(members)}`);
                 cycler(members)
@@ -89,8 +77,6 @@ exports.fetchlife = functions.https.onRequest((req, res) => {
                         res.status(200).send('online');
                     })
             }
-
-
         })
     })
 })
@@ -99,12 +85,11 @@ exports.joinMember = functions.database.ref('/member/{person}')
     .onCreate((snapshot) => {
         console.log(` Getting ${snapshot.params.person}`)
         return getInfo(snapshot.params.person);
-        // return true;
     })
 
 exports.checkMessage = functions.database.ref('/log/{element}')
     .onCreate((event) => {
-        if (event.data.val() === null /*&& snapshot.data.val().display_name === "LibertyBeta"*/) return true;
+        if (event.data.val() === null) return true;
 
         const client = new language.LanguageServiceClient();
         //if this is a message to parse, build a Dictionary.
@@ -135,12 +120,15 @@ exports.checkMessage = functions.database.ref('/log/{element}')
         if (message.filter((e) => { return hi.indexOf(e.toLowerCase()) > -1 }).length !== 0) {
             admin.database().ref('/bot/que').push(`Hi ${event.data.val().display_name}`);
         }
+
+
         const document = {
             content: event.data.val().message,
             type: 'PLAIN_TEXT',
         };
 
         const ref = event.data.ref;
+        
         return client
             .analyzeSentiment({ document: document })
             .then(results => {

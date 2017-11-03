@@ -26,7 +26,6 @@ const makeTeamDetails = (id) => {
 };
 
 // initial state
-// shape: [{ id, quantity }]
 const state = {
   list: {},
   details: {},

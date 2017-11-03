@@ -13,11 +13,11 @@ let marvin = null;
 admin.database().ref('twitchAuth').on("value", (snapshot) => {
     process.stdout.write('Got a bit of data\n');
     if (snapshot.val() === null) {
-        admin.database().ref('/bot/status').set('online');
-        process.stdout.write("Marvin Can't Startup. No Auth Toke\nn")
+        admin.database().ref('/bot/status').set('offline');
+        process.stdout.write("Marvin Can't Startup. No Auth Token\n")
     } else {
         if (marvin) {
-            admin.database().ref('/bot/status').set('online');
+            admin.database().ref('/bot/status').set('offline');
             process.stdout.write("Killing the OLD marvin\n")
             marvin.close();
             marvin = {};
@@ -42,16 +42,25 @@ admin.database().ref('twitchAuth').on("value", (snapshot) => {
                 })
             }, 900000);
             marvin.on('message', chatter => {
+
+                //Push all Message to Firebase
                 admin.database().ref('/log').push(chatter);
+
+                //Set up Triggers
+
+                //Test Triggers
                 if (chatter.message === '!test') {
                     marvin.say('I\'m online! PogChamp')
                 }
+
+                //Donation Menu Trigger
                 if (chatter.message === '!menu') {
                     admin.database().ref('/marvin/menu').once('value', (snapshot) => {
                         marvin.say(snapshot.val());
                     })
                 }
 
+                //Ask about our donations
                 if (chatter.message === '!donations') {
                     marvin.say('Most recent donations are:')
                     admin.database().ref('/member').once('value', (snapshot) => {
