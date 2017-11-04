@@ -144,7 +144,7 @@ exports.checkMessage = functions.database.ref('/log/{element}')
                 const entities = results[0].entities;
                 console.log('Entities:');
                 entities.forEach(entity => {
-                    if (entity.salience > 0.5) {
+                    if (entity.salience > 0.6) {
                         console.log(`Found a Salient Comment - ${entity.name.toLowerCase()}, checking this list of responses`)
                         switch (entity.name.toLowerCase()) {
                             case 'donation reward':
@@ -153,9 +153,13 @@ exports.checkMessage = functions.database.ref('/log/{element}')
                             case 'donation rewards':
                                 admin.database().ref('/bot/que').push(`Hi ${event.data.val().display_name}, you can find our rewards on the site.`);
                                 break;
+                            case 'donate more':
+                                admin.database().ref('/bot/que').push('Then buy the guys dinner!');
+                                break;
+                            default:
+                                admin.database().ref('/bot/que').push(`I think ${event.data.val().display_name}, said something import about ${entity.name.toLowerCase()}`);
                         }
                     }
-
                 });
             })
             .catch(err => {
