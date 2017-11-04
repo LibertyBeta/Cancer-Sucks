@@ -1,6 +1,6 @@
 <template lang="html">
   <v-layout row wrap>
-    <v-flex class="thing" md4 xs12 v-for="member in team">
+    <v-flex class="thing" md6 xs12 v-for="member in team">
       <v-progress-circular
         v-bind:size="size"
         v-bind:width="bar"
