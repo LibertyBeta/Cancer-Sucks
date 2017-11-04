@@ -7,15 +7,6 @@ const getProgress = (id) => {
     try {
         console.log(`FETCH Progress for ${id}`)
         extraLife.getRecentDonations(id, (data) => {
-            if (data.length === 0) {
-                data = [{
-                    message: "Great job raising money!",
-                    createdOn: "2016-09-18T10:50:21-0400",
-                    donorName: "Alex Muench",
-                    avatarImageURL: "//static.donordrive.com/clients/extralife/img/avatar-constituent-default.gif",
-                    donationAmount: 100
-                }];
-            }
             admin.database().ref(`/member/${id}/donations`).set(data);
         });
     } catch (e) { }
