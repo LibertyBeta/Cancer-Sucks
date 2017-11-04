@@ -16,6 +16,7 @@ const state = {
   start: '2017-12-29',
   title: 'Loading...',
   blerb: 'Loading...',
+  channel: 'LibertyBeta',
 };
 
 // getters
@@ -23,6 +24,7 @@ const getters = {
   start: state => state.start,
   title: state => state.title,
   blerb: state => state.blerb,
+  channel: state => state.channel,
 };
 
 // actions
@@ -43,6 +45,7 @@ const mutations = {
     state.start = snapshot.start;
     state.title = snapshot.title;
     state.blerb = snapshot.blerb;
+    state.channel = snapshot.channel;
   },
 };
 

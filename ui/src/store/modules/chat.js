@@ -3,7 +3,7 @@ import Store from '../index';
 
 let ref = {};
 const makeRef = () => {
-  ref = fb.database().ref('/log').limitToLast(5).orderByChild('tmi_sent_ts');
+  ref = fb.database().ref('/log').limitToLast(6).orderByChild('tmi_sent_ts');
   ref.once('value', (snapshot) => {
     Store.commit('chat/load', snapshot.val());
   });

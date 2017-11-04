@@ -22,7 +22,12 @@
             </v-flex>
           </v-layout>
           <v-layout row wrap>
-            <v-flex xs12>
+            <v-flex xs12 md6>
+              <v-card>
+                <twitch-player :channel="channel"></twitch-player>
+              </v-card>
+            </v-flex>
+            <v-flex xs12 md6>
               <c-chat></c-chat>
             </v-flex>
           </v-layout>
@@ -42,6 +47,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import VueTwitchPlayer from 'vue-twitch-player';
 import progress from './components/progress';
 import donations from './components/donations';
 import menu from './components/menu';
@@ -77,6 +83,7 @@ export default {
   computed: {
     ...mapGetters({
       title: 'settings/title',
+      channel: 'settings/channel',
     }),
   },
   watch: {
@@ -111,6 +118,7 @@ export default {
     'c-menu': menu,
     'c-donations': donations,
     'c-chat': chat,
+    'twitch-player': VueTwitchPlayer,
   },
 };
 </script>
